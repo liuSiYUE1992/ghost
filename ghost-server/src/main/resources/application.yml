@@ -1,0 +1,43 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: gosh-server
+
+  shardingsphere:
+                                                  # 内存模式，元数据保存在当前进程中
+    datasource:
+      names: master,slave
+      master:                                                  # 跟上面的数据源对应
+        url: jdbc:mysql://172.16.9.1:3306/dxx                       # 连接url
+        username: root
+        password: bxzh123456!
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: c
+      slave:                                                  # 跟上面的数据源对应
+        url: jdbc:mysql://172.16.9.1:3306/dxx                       # 连接url
+        username: root
+        password: bxzh123456!
+        type: com.zaxxer.hikari.HikariDataSource
+
+
+    rules:                                                           # 配置分库分表以及读写分离的规则
+      readwrite-splitting:                                           # 配置读写分离规则
+        data-sources:                                                # 数据源
+          master:                                              # 这个可以随便取，带有区分意义即可，比如这里表示的是主库test0的规则
+            type: Static                                             # 静态类型
+            load-balancer-name: round_robin                          # 负载均衡算法名字
+            props:                                                   # 具体读写数据源需要配置在props下
+              write-data-source-name: master                   # 写数据源
+              read-data-source-names: slave                    # 读数据源
+        load-balancers:                                              # 负载均衡配置
+          round_robin:                                               # 跟上面负载均衡算法的名字对应
+            type: ROUND_ROBIN                                        # 负载均衡算法
+    props:
+      sql-show: true                                                 # 打印SQL
+
+
+
+
+
+

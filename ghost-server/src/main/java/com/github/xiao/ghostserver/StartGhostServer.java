@@ -23,20 +23,22 @@ public class StartGhostServer {
 
     private static final ScheduledThreadPoolExecutor THREAD_POOL_EXECUTOR = new ScheduledThreadPoolExecutor(1,new ServerThreadFactory("keepalive"));
 
+    private static final String HELP_STR ="h";
+
     public static void main(String[] args) {
         Options options = new Options();
-        options.addOption("h", false, "Help");
-        options.addOption("port", true, "server port");
+        options.addOption("help", false, "Help");
+        options.addOption("port", true, "ghost server port");
 
         CommandLineParser parser = new DefaultParser();
-        CommandLine cmd    = null;
+        CommandLine cmd;
         try {
             cmd = parser.parse(options, args);
-            if (cmd.hasOption("h")) {
+            if (cmd.hasOption(HELP_STR)) {
                 HelpFormatter formatter = new HelpFormatter();
                 formatter.printHelp("options", options);
             } else {
-                int port = Integer.parseInt(cmd.getOptionValue("port", "9675"));
+                int port = Integer.parseInt(cmd.getOptionValue("port", "4396"));
                 boolean sync = cmd.hasOption("sync");
                 NettyServer nettyServer = new DefaultNettyServer();
                 nettyServer.startServer(new ServerInitializer(sync),port);
@@ -46,7 +48,6 @@ public class StartGhostServer {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-
 
     }
 
